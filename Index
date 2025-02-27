@@ -1,0 +1,717 @@
+# PATH - Patient Ambulance Transport Hub
+
+A modern web application connecting hospitals with ambulance services for efficient patient transport. The platform functions like an "Uber for ambulances" - hospitals can request patient transport, and ambulance services can bid on these requests based on availability and proximity.
+
+## Project Structure
+
+```
+path-transport-platform/
+├── .gitignore
+├── README.md
+├── package.json
+├── public/
+│   ├── favicon.ico
+│   ├── index.html
+│   └── manifest.json
+├── src/
+│   ├── App.js
+│   ├── index.js
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── button.jsx
+│   │   │   ├── card.jsx
+│   │   │   ├── input.jsx
+│   │   │   ├── label.jsx
+│   │   │   ├── select.jsx
+│   │   │   ├── tabs.jsx
+│   │   │   └── badge.jsx
+│   │   └── PATH.jsx
+│   └── styles/
+│       └── globals.css
+```
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js (v16 or later)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/your-username/path-transport-platform.git
+cd path-transport-platform
+```
+
+2. Install dependencies
+```bash
+npm install
+# or
+yarn
+```
+
+3. Start the development server
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+4. Open your browser and navigate to `http://localhost:3000`
+
+## Features
+
+### For Hospitals
+- Create transport requests with patient details
+- Set urgency levels and special requirements
+- Review bids from ambulance services
+- Accept the most suitable bid based on ETA and price
+- Track the status of all transport requests
+
+### For Ambulance Services
+- View open transport requests in real-time
+- Place bids with estimated arrival times and pricing
+- Receive notifications when bids are accepted
+- Manage transport schedule efficiently
+
+## File Contents
+
+### .gitignore
+```
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/dist
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+```
+
+### package.json
+```json
+{
+  "name": "path-transport-platform",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.263.1",
+    "tailwindcss": "^3.3.5",
+    "clsx": "^2.0.0",
+    "class-variance-authority": "^0.7.0",
+    "tailwind-merge": "^2.0.0",
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "dev": "react-scripts start",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31"
+  }
+}
+```
+
+### public/index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="PATH - Patient Ambulance Transport Hub"
+    />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>PATH - Patient Transport Platform</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+### public/manifest.json
+```json
+{
+  "short_name": "PATH",
+  "name": "Patient Ambulance Transport Hub",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+```
+
+### src/index.js
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './styles/globals.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+### src/App.js
+```javascript
+import React from 'react';
+import PATH from './components/PATH';
+
+function App() {
+  return (
+    <div className="app">
+      <PATH />
+    </div>
+  );
+}
+
+export default App;
+```
+
+### src/styles/globals.css
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 248, 250, 252;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+```
+
+### src/components/ui/button.jsx
+```jsx
+import React from 'react';
+
+export function Button({ children, variant = "default", size = "default", className = "", onClick, ...props }) {
+  const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
+  
+  const variants = {
+    default: "bg-blue-600 text-white hover:bg-blue-700",
+    outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+  };
+  
+  const sizes = {
+    default: "h-10 py-2 px-4",
+    sm: "h-8 px-3 text-sm",
+  };
+  
+  const variantStyle = variants[variant] || variants.default;
+  const sizeStyle = sizes[size] || sizes.default;
+  
+  return (
+    <button
+      className={`${baseStyles} ${variantStyle} ${sizeStyle} ${className}`}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+### src/components/ui/card.jsx
+```jsx
+import React from 'react';
+
+export function Card({ className, ...props }) {
+  return (
+    <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
+  );
+}
+
+export function CardHeader({ className, ...props }) {
+  return (
+    <div className={`flex flex-col space-y-1.5 p-6 ${className}`} {...props} />
+  );
+}
+
+export function CardTitle({ className, ...props }) {
+  return (
+    <h3 className={`text-lg font-semibold leading-none tracking-tight ${className}`} {...props} />
+  );
+}
+
+export function CardDescription({ className, ...props }) {
+  return (
+    <p className={`text-sm text-muted-foreground ${className}`} {...props} />
+  );
+}
+
+export function CardContent({ className, ...props }) {
+  return (
+    <div className={`p-6 pt-0 ${className}`} {...props} />
+  );
+}
+
+export function CardFooter({ className, ...props }) {
+  return (
+    <div className={`flex items-center p-6 pt-0 ${className}`} {...props} />
+  );
+}
+```
+
+### src/components/ui/input.jsx
+```jsx
+import React from 'react';
+
+export function Input({ className, ...props }) {
+  return (
+    <input
+      className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      {...props}
+    />
+  );
+}
+```
+
+### src/components/ui/label.jsx
+```jsx
+import React from 'react';
+
+export function Label({ className, ...props }) {
+  return (
+    <label
+      className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${className}`}
+      {...props}
+    />
+  );
+}
+```
+
+### src/components/ui/select.jsx
+```jsx
+import React, { useState } from 'react';
+
+export function Select({ children, value, onValueChange, ...props }) {
+  return (
+    <div className="relative" {...props}>
+      <SelectTrigger value={value} onClick={() => document.getElementById(`select-content-${value}`).classList.toggle('hidden')}>
+        <SelectValue>{value}</SelectValue>
+      </SelectTrigger>
+      <SelectContent id={`select-content-${value}`} className="hidden">
+        {React.Children.map(children, child => {
+          if (React.isValidElement(child) && child.type === SelectItem) {
+            return React.cloneElement(child, {
+              onClick: () => {
+                onValueChange(child.props.value);
+                document.getElementById(`select-content-${value}`).classList.add('hidden');
+              }
+            });
+          }
+          return child;
+        })}
+      </SelectContent>
+    </div>
+  );
+}
+
+export function SelectTrigger({ children, className, ...props }) {
+  return (
+    <button
+      className={`flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      {...props}
+    >
+      {children}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down h-4 w-4 opacity-50">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+  );
+}
+
+export function SelectValue({ className, ...props }) {
+  return <span className={`block truncate ${className}`} {...props} />;
+}
+
+export function SelectContent({ className, ...props }) {
+  return (
+    <div
+      className={`relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80 absolute top-full left-0 w-full mt-1 ${className}`}
+      {...props}
+    />
+  );
+}
+
+export function SelectItem({ className, children, ...props }) {
+  return (
+    <div
+      className={`relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+```
+
+### src/components/ui/tabs.jsx
+```jsx
+import React, { useState } from 'react';
+
+export function Tabs({ defaultValue, ...props }) {
+  const [activeTab, setActiveTab] = useState(defaultValue);
+
+  return (
+    <div {...props}>
+      {React.Children.map(props.children, child => {
+        if (React.isValidElement(child)) {
+          if (child.type === TabsList) {
+            return React.cloneElement(child, { activeTab, setActiveTab });
+          }
+          if (child.type === TabsContent) {
+            return React.cloneElement(child, { activeTab });
+          }
+        }
+        return child;
+      })}
+    </div>
+  );
+}
+
+export function TabsList({ children, activeTab, setActiveTab, className, ...props }) {
+  return (
+    <div
+      className={`inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground ${className}`}
+      {...props}
+    >
+      {React.Children.map(children, child => {
+        if (React.isValidElement(child) && child.type === TabsTrigger) {
+          return React.cloneElement(child, { 
+            active: activeTab === child.props.value,
+            onClick: () => setActiveTab(child.props.value)
+          });
+        }
+        return child;
+      })}
+    </div>
+  );
+}
+
+export function TabsTrigger({ children, value, active, className, ...props }) {
+  return (
+    <button
+      className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${active ? 'bg-background text-foreground shadow-sm' : ''} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function TabsContent({ children, value, activeTab, className, ...props }) {
+  if (value !== activeTab) return null;
+  return (
+    <div
+      className={`mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+```
+
+### src/components/ui/badge.jsx
+```jsx
+import React from 'react';
+
+export function Badge({ children, variant = "default", className = "", ...props }) {
+  const baseStyles = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+  
+  const variants = {
+    default: "bg-primary text-primary-foreground hover:bg-primary/80",
+    outline: "text-foreground border border-input hover:bg-accent hover:text-accent-foreground",
+  };
+  
+  const variantStyle = variants[variant] || variants.default;
+  
+  return (
+    <div
+      className={`${baseStyles} ${variantStyle} ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+```
+
+### src/components/PATH.jsx
+```jsx
+import React, { useState } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Badge } from './ui/badge';
+import { AlertCircle, Ambulance, Clock, Hospital, MapPin, Phone, User } from 'lucide-react';
+
+const PATH = () => {
+  // App State
+  const [userType, setUserType] = useState('hospital');
+  const [transportRequests, setTransportRequests] = useState([
+    {
+      id: 'TR-1001',
+      hospitalName: 'Memorial General Hospital',
+      patientName: 'John Doe',
+      urgency: 'Medium',
+      pickupLocation: 'Emergency Department, Floor 1',
+      destination: 'City Specialists Center',
+      specialRequirements: 'Oxygen support required',
+      requestTime: '10:30 AM',
+      status: 'Open',
+      bids: [
+        { companyName: 'FastMed Transport', estimatedArrival: '15 mins', price: '$350', selected: false },
+        { companyName: 'City Ambulance Services', estimatedArrival: '12 mins', price: '$375', selected: false }
+      ]
+    },
+    {
+      id: 'TR-1002',
+      hospitalName: 'University Medical Center',
+      patientName: 'Sarah Johnson',
+      urgency: 'High',
+      pickupLocation: 'ICU, Floor 3',
+      destination: 'Regional Burn Center',
+      specialRequirements: 'Critical care equipment, burn specialist on board',
+      requestTime: '11:15 AM',
+      status: 'Open',
+      bids: []
+    }
+  ]);
+
+  // New request form state
+  const [newRequest, setNewRequest] = useState({
+    patientName: '',
+    urgency: 'Medium',
+    pickupLocation: '',
+    destination: '',
+    specialRequirements: ''
+  });
+
+  // New bid form state
+  const [newBid, setNewBid] = useState({
+    requestId: '',
+    estimatedArrival: '',
+    price: ''
+  });
+
+  // Handle form inputs for new transport request
+  const handleRequestInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewRequest(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle select changes for new transport request
+  const handleRequestSelectChange = (name, value) => {
+    setNewRequest(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Submit new transport request
+  const submitTransportRequest = () => {
+    // Validation
+    if (!newRequest.patientName || !newRequest.pickupLocation || !newRequest.destination) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    const newTransportRequest = {
+      id: `TR-${1003 + transportRequests.length}`,
+      hospitalName: 'Your Hospital',
+      patientName: newRequest.patientName,
+      urgency: newRequest.urgency,
+      pickupLocation: newRequest.pickupLocation,
+      destination: newRequest.destination,
+      specialRequirements: newRequest.specialRequirements,
+      requestTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: 'Open',
+      bids: []
+    };
+
+    setTransportRequests([newTransportRequest, ...transportRequests]);
+    
+    // Reset form
+    setNewRequest({
+      patientName: '',
+      urgency: 'Medium',
+      pickupLocation: '',
+      destination: '',
+      specialRequirements: ''
+    });
+  };
+
+  // Submit bid on transport request
+  const submitBid = (requestId) => {
+    if (!newBid.estimatedArrival || !newBid.price) {
+      alert('Please provide estimated arrival time and price');
+      return;
+    }
+
+    setTransportRequests(prev => prev.map(request => {
+      if (request.id === requestId) {
+        return {
+          ...request,
+          bids: [
+            ...request.bids,
+            {
+              companyName: 'Your Ambulance Service',
+              estimatedArrival: newBid.estimatedArrival,
+              price: newBid.price,
+              selected: false
+            }
+          ]
+        };
+      }
+      return request;
+    }));
+
+    setNewBid({
+      requestId: '',
+      estimatedArrival: '',
+      price: ''
+    });
+  };
+
+  // Accept a bid (for hospital view)
+  const acceptBid = (requestId, bidIndex) => {
+    setTransportRequests(prev => prev.map(request => {
+      if (request.id === requestId) {
+        const updatedBids = request.bids.map((bid, idx) => ({
+          ...bid,
+          selected: idx === bidIndex
+        }));
+        
+        return {
+          ...request,
+          status: 'Assigned',
+          bids: updatedBids
+        };
+      }
+      return request;
+    }));
+  };
+
+  // Function to get urgency badge color
+  const getUrgencyColor = (urgency) => {
+    switch (urgency) {
+      case 'High': return 'bg-red-500';
+      case 'Medium': return 'bg-yellow-500';
+      case 'Low': return 'bg-green-500';
+      default: return 'bg-blue-500';
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 py-4">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Ambulance className="h-6 w-6 text-blue-600" />
+            <h1 className="text-2xl font-bold text-blue-700">PATH</h1>
+            <span className="text-sm text-gray-500">Patient Transport Hub</span>
+          </div>
+          
+          <div className="flex space-x-4">
+            <Button 
+              variant={userType === 'hospital' ? "default" : "outline"}
+              onClick={() => setUserType('hospital')}
+              className="flex items-center"
+            >
+              <Hospital className="mr-2 h-4 w-4" />
+              Hospital
+            </Button>
+            <Button 
+              variant={userType === 'ambulance' ? "default" : "outline"}
+              onClick={() => setUserType('ambulance')}
+              className="flex items-center"
+            >
+              <Ambulance className="mr-2 h-4 w-4" />
+              Ambulance Service
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 container mx-auto px-4 py-8">
+        {userType === 'hospital' ? (
+          <div>
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">Request Patient Transport</h2>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="patientName">Patient Name</Label>
+                      <Input 
+                        id="patientName" 
+                        name="patientName"
+                        placeholder="Enter patient name" 
+            
